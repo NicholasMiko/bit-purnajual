@@ -44,15 +44,15 @@ const isValid = computed(() => isFilled.value && fieldValid.value)
 watch(fieldValue, () => {
   clearCheckTimer()
 
-  if (!isFilled.value) {
-    isChecking.value = false
-    return
-  }
+  // if (!isFilled.value) {
+  //   isChecking.value = false
+  //   return
+  // }
 
-  isChecking.value = true
-  checkTimer = setTimeout(() => {
-    isChecking.value = false
-  }, props.checkDelay)
+  // isChecking.value = true
+  // checkTimer = setTimeout(() => {
+  //   isChecking.value = false
+  // }, props.checkDelay)
 })
 
 onBeforeUnmount(() => {

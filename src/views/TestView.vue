@@ -13,16 +13,21 @@
         </h2>
 
         <FormRow label="Huruf kapital" :without-after="false">
-          <InputTextbox v-model="form.textboxUppercase" name="textboxUppercase" label="Huruf kapital" place-holder="Otomatis kapital" uppercase />
+          <InputTextbox
+            v-model="form.textboxUppercase" name="textboxUppercase" label="Huruf kapital" place-holder="Otomatis kapital"
+            uppercase
+          />
           <template #after>
             <FieldValidIcon name="textboxUppercase" />
           </template>
         </FormRow>
 
         <FormRow label="Nonaktif" without-after>
-          <InputTextbox v-model="form.textboxDisabled" name="textboxDisabled" label="Nonaktif" place-holder="Tidak bisa diisi" disabled />
+          <InputTextbox
+            v-model="form.textboxDisabled" name="textboxDisabled" label="Nonaktif" place-holder="Tidak bisa diisi"
+            disabled
+          />
         </FormRow>
-
       </FormContainer>
     </PageContainer>
 
@@ -40,7 +45,10 @@
         </FormRow>
 
         <FormRow label="Nomor telepon" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
-          <InputPhoneNumber v-model="form.phone" name="phone" label="Nomor telepon" placeholder="08xxxxxxxxxx" required />
+          <InputPhoneNumber
+            v-model="form.phone" name="phone" label="Nomor telepon" placeholder="08xxxxxxxxxx"
+            required
+          />
           <template #after>
             <FieldValidIcon name="phone" />
           </template>
@@ -152,7 +160,10 @@
         </h2>
 
         <FormRow label="Upload File" tooltip-string="Format JPG atau PNG, maksimal 2 MB" :without-after="false">
-          <InputFile v-model="form.file" v-model:file="uploadedFile" name="file" hint="Upload 1 supported file: JPG, PNG. Max 2 MB." required />
+          <InputFile
+            v-model="form.file" v-model:file="uploadedFile" name="file" hint="Upload 1 supported file: JPG, PNG. Max 2 MB."
+            required
+          />
           <template #after>
             <FieldValidIcon name="file" />
           </template>

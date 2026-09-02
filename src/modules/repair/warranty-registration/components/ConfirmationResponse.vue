@@ -14,7 +14,7 @@
       <p class="pt-6 text-sm font-bold text-ink-700">
         JIKA SUDAH TERVERIFIKASI, AKAN KAMI KIRIMKAN EMAIL LAGI.
       </p>
-      <div class="pt-6">
+      <div class="flex items-center gap-120 pt-6">
         <button
           type="button"
           class="rounded-lg border border-ink-300 px-7 py-3 text-sm font-medium text-ink-700 hover:bg-ink-100"
@@ -22,6 +22,12 @@
         >
           Registrasi Lagi Produk Lainnya
         </button>
+        <RouterLink
+          :to="{ name: 'service-tickets' }"
+          class="rounded-md border border-ink-300 px-4 py-2 text-sm font-medium text-ink-700 hover:bg-ink-100"
+        >
+          Lihat Tiket Servis
+        </RouterLink>
       </div>
     </div>
   </PageContainer>

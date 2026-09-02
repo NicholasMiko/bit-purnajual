@@ -26,40 +26,68 @@
       <table class="w-full text-left text-sm">
         <thead class="border-b border-ink-100 bg-ink-100/40 text-ink-500">
           <tr>
-            <th class="px-4 py-3 font-medium">No. Tiket</th>
-            <th class="px-4 py-3 font-medium">No. Registrasi</th>
-            <th class="px-4 py-3 font-medium">Pelanggan</th>
-            <th class="px-4 py-3 font-medium">Produk</th>
-            <th class="px-4 py-3 font-medium">Keluhan</th>
-            <th class="px-4 py-3 font-medium">Status</th>
-            <th class="px-4 py-3 text-right font-medium">Aksi</th>
+            <th class="px-4 py-3 font-medium">
+              No. Tiket
+            </th>
+            <th class="px-4 py-3 font-medium">
+              No. Registrasi
+            </th>
+            <th class="px-4 py-3 font-medium">
+              Pelanggan
+            </th>
+            <th class="px-4 py-3 font-medium">
+              Produk
+            </th>
+            <th class="px-4 py-3 font-medium">
+              Keluhan
+            </th>
+            <th class="px-4 py-3 font-medium">
+              Status
+            </th>
+            <th class="px-4 py-3 text-right font-medium">
+              Action
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="ticketStore.isLoading">
-            <td colspan="7" class="px-4 py-6 text-center text-ink-500">Memuat data tiket...</td>
+            <td colspan="7" class="px-4 py-6 text-center text-ink-500">
+              Memuat data tiket...
+            </td>
           </tr>
           <tr v-else-if="ticketStore.tickets.length === 0">
-            <td colspan="7" class="px-4 py-6 text-center text-ink-500">Belum ada tiket servis.</td>
+            <td colspan="7" class="px-4 py-6 text-center text-ink-500">
+              Belum ada tiket servis.
+            </td>
           </tr>
           <tr
             v-for="ticket in ticketStore.tickets"
             :key="ticket.id"
             class="border-b border-ink-100 last:border-0 hover:bg-ink-100/30"
           >
-            <td class="px-4 py-3 font-medium text-ink-950">{{ ticket.nomorTiket }}</td>
-            <td class="px-4 py-3 text-brand-500">{{ ticket.nomorRegistrasi }}</td>
-            <td class="px-4 py-3">{{ ticket.namaPelanggan }}</td>
-            <td class="px-4 py-3">{{ ticket.produk }}</td>
-            <td class="max-w-xs truncate px-4 py-3" :title="ticket.keluhan">{{ ticket.keluhan }}</td>
+            <td class="px-4 py-3 font-medium text-ink-950">
+              {{ ticket.nomorTiket }}
+            </td>
+            <td class="px-4 py-3 text-brand-500">
+              {{ ticket.nomorRegistrasi }}
+            </td>
+            <td class="px-4 py-3">
+              {{ ticket.namaPelanggan }}
+            </td>
+            <td class="px-4 py-3">
+              {{ ticket.produk }}
+            </td>
+            <td class="max-w-xs truncate px-4 py-3" :title="ticket.keluhan">
+              {{ ticket.keluhan }}
+            </td>
             <td class="px-4 py-3">
               <StatusBadge :status="ticket.status" :tone-map="statusTone" />
             </td>
-            <td class="px-4 py-3 text-right">
+            <td class="px-4 py-8 text-right">
               <button type="button" class="mr-3 text-sm font-medium text-brand-500 hover:underline" @click="openEditForm(ticket)">
                 Ubah
               </button>
-              <button type="button" class="text-sm font-medium text-rose-600 hover:underline" @click="askDelete(ticket)">
+              <button type="button" class="mr-1 text-sm font-medium text-rose-600 hover:underline" @click="askDelete(ticket)">
                 Hapus
               </button>
             </td>

@@ -2,11 +2,11 @@
   <button
     v-if="isVisible"
     type="button"
-    class="fixed bottom-8 right-8 z-20 inline-flex items-center gap-1.5 rounded-full border border-ink-200 bg-white px-4 py-2 text-sm font-medium text-ink-700 shadow-lg hover:bg-brand-50"
+    class="fixed bottom-8 right-8 z-20 inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-5 py-2.5 text-sm font-semibold text-ink-900 shadow-lg transition-colors hover:bg-brand-50"
     @click="scrollToTarget"
   >
     {{ label }}
-    <Icon :icon-types="iconType.Chevron" custom-class="h-4 w-4" />
+    <Icon :icon-types="iconType.ChevronDouble" custom-class="h-4 w-4 text-ink-700" />
   </button>
 </template>
 

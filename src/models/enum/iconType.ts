@@ -4,6 +4,7 @@ export enum iconType {
   Upload = 'upload',
   Download = 'download',
   Chevron = 'chevron',
+  ChevronDouble = 'chevronDouble',
   Check = 'check',
   Warning = 'warning',
   Trash = 'trash',
