@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink-950: #0f172a;
+  --color-ink-900: #1b2436;
+  --color-ink-700: #384357;
+  --color-ink-500: #6b7688;
+  --color-ink-300: #b7bfcc;
+  --color-ink-100: #e7eaf0;
+
+  --color-canvas: #ffffff;
+  --color-panel: #ffffff;
+
+  /* Palet biru — satu-satunya warna aksen di aplikasi ini (tanpa hijau). */
+  --color-brand-700: #1d4ed8;
+  --color-brand-600: #2563eb;
+  --color-brand-500: #3b82f6;
+  --color-brand-200: #bfdbfe;
+  --color-brand-100: #dbeafe;
+  --color-brand-50: #eff6ff;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink-900);
+}

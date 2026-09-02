@@ -1,0 +1,17 @@
+export class ComponentCatalogModel {
+  textboxUppercase = ''
+  textboxDisabled = ''
+  email = ''
+  phone = ''
+  comboFilled = ''
+  comboEmpty = ''
+  comboDisabled = ''
+  dateFree = ''
+  datePast = ''
+  dateDisabled = ''
+  textArea = ''
+  file = ''
+  readOnly = ''
+  readOnlySource = ''
+  shortColumn = ''
+}
