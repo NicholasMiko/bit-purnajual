@@ -30,7 +30,7 @@ import { useField } from 'vee-validate'
 import { computed, ref, watch, type PropType } from 'vue'
 import * as yup from 'yup'
 import ErrorMessages from '../ErrorMessages.vue'
-import { withDefaultGeneralInputTextRule } from '@/validations/general-rule.validation'
+import { withDefaultGeneralInputTextRule } from '@/validations/generalRule.validation.js'
 import { InputVariant } from '@/models/enum/inputVariant'
 import { useTextCaseModel } from '@/composable/useTextCaseModel'
 

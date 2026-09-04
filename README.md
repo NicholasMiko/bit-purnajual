@@ -52,7 +52,7 @@ src/
 
   assets/
   components/
-    base/                   AlertModal, FieldValidIcon, FilePreview,
+    base/                   AlertModal, InputValidationState, FilePreview,
                             ScrollToActionButton, StatusBadge, StepIndicator
     combobox/               Combobox
     formRow/                FormRow

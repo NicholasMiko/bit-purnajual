@@ -54,7 +54,7 @@
 import { computed } from 'vue'
 import FormContainer from '@/components/sharedComponents/container/FormContainer.vue'
 import FilePreview from '@/components/base/FilePreview.vue'
-import { WarrantyRegistrationFormModel } from '../models/warranty-registration-form.model'
+import { WarrantyRegistrationFormModel } from '../models/warrantyRegistration.form.model'
 
 const props = defineProps({
   form: {

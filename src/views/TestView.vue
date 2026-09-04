@@ -18,7 +18,7 @@
             uppercase
           />
           <template #after>
-            <FieldValidIcon name="textboxUppercase" />
+            <InputValidationState name="textboxUppercase" />
           </template>
         </FormRow>
 
@@ -40,7 +40,7 @@
         <FormRow label="Email" :without-after="false">
           <InputEmail v-model="form.email" name="email" placeholder="nama@perusahaan.com" required />
           <template #after>
-            <FieldValidIcon name="email" />
+            <InputValidationState name="email" />
           </template>
         </FormRow>
 
@@ -50,7 +50,7 @@
             required
           />
           <template #after>
-            <FieldValidIcon name="phone" />
+            <InputValidationState name="phone" />
           </template>
         </FormRow>
       </FormContainer>
@@ -74,7 +74,7 @@
             required
           />
           <template #after>
-            <FieldValidIcon name="comboFilled" />
+            <InputValidationState name="comboFilled" />
           </template>
         </FormRow>
 
@@ -114,14 +114,14 @@
         <FormRow label="Bebas" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
           <InputDate v-model="form.dateFree" name="dateFree" required />
           <template #after>
-            <FieldValidIcon name="dateFree" />
+            <InputValidationState name="dateFree" />
           </template>
         </FormRow>
 
         <FormRow label="Maks. Current Date" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
           <InputDate v-model="form.datePast" name="datePast" :max-date="today" required />
           <template #after>
-            <FieldValidIcon name="datePast" />
+            <InputValidationState name="datePast" />
           </template>
         </FormRow>
 
@@ -147,7 +147,7 @@
             required
           />
           <template #after>
-            <FieldValidIcon name="textArea" />
+            <InputValidationState name="textArea" />
           </template>
         </FormRow>
       </FormContainer>
@@ -165,7 +165,7 @@
             required
           />
           <template #after>
-            <FieldValidIcon name="file" />
+            <InputValidationState name="file" />
           </template>
         </FormRow>
 
@@ -184,7 +184,7 @@
         <FormRow label="Reactive" :without-after="false">
           <InputReadOnlyText v-model="form.readOnly" name="readOnly" label="Reactive" />
           <template #after>
-            <FieldValidIcon name="readOnly" />
+            <InputValidationState name="readOnly" />
           </template>
         </FormRow>
 
@@ -293,7 +293,7 @@ import InputDate from '@/components/inputDate/InputDate.vue'
 import InputFile from '@/components/inputFile/InputFile.vue'
 import InputReadOnlyText from '@/components/inputReadOnlyText/InputReadOnlyText.vue'
 import Combobox from '@/components/combobox/Combobox.vue'
-import FieldValidIcon from '@/components/base/FieldValidIcon.vue'
+import InputValidationState from '@/components/base/InputValidationState.vue'
 import FilePreview from '@/components/base/FilePreview.vue'
 import StatusBadge from '@/components/base/StatusBadge.vue'
 import StepIndicator from '@/components/base/StepIndicator.vue'

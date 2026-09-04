@@ -16,7 +16,7 @@
         required
       />
       <template #after>
-        <FieldValidIcon name="merk" />
+        <InputValidationState name="merk" />
       </template>
     </FormRow>
 
@@ -33,7 +33,7 @@
         required
       />
       <template #after>
-        <FieldValidIcon name="tipeProduk" />
+        <InputValidationState name="tipeProduk" />
       </template>
     </FormRow>
 
@@ -44,7 +44,7 @@
         name="namaProduk" required 
       />
       <template #after>
-        <FieldValidIcon name="namaProduk" />
+        <InputValidationState name="namaProduk" />
       </template>
     </FormRow>
 
@@ -56,14 +56,15 @@
     >
       <InputTextbox
         v-model="form.nomorSerial"
-        label="Nomor Serial"
+        v-model:checking="isCheckingSerial"
         name="nomorSerial"
+        label="Nomor Serial"
         place-holder="Input Nomor Serial"
-        :additional-rules="uniqueSerialRule"
+        :async-validator="validateSerialAvailability"
         required
       />
       <template #after>
-        <FieldValidIcon name="nomorSerial" />
+        <InputValidationState name="nomorSerial" deferred :checking="isCheckingSerial" />
       </template>
     </FormRow>
 
@@ -75,7 +76,7 @@
         place-holder="Input Nama Toko" required
       />
       <template #after>
-        <FieldValidIcon name="namaToko" />
+        <InputValidationState name="namaToko" />
       </template>
     </FormRow>
 
@@ -88,14 +89,14 @@
         required 
       />
       <template #after>
-        <FieldValidIcon name="kota" />
+        <InputValidationState name="kota" />
       </template>
     </FormRow>
 
     <FormRow label="Tanggal Pembelian" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
       <InputDate v-model="form.tanggalPembelian" name="tanggalPembelian" :max-date="today" required />
       <template #after>
-        <FieldValidIcon name="tanggalPembelian" />
+        <InputValidationState name="tanggalPembelian" />
       </template>
     </FormRow>
 
@@ -107,7 +108,7 @@
         place-holder="Input Invoice" required
       />
       <template #after>
-        <FieldValidIcon name="invoice" />
+        <InputValidationState name="invoice" />
       </template>
     </FormRow>
 
@@ -124,14 +125,14 @@
         required
       />
       <template #after>
-        <FieldValidIcon name="fotoInvoicePembelian" />
+        <InputValidationState name="fotoInvoicePembelian" />
       </template>
     </FormRow>
   </FormContainer>
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import FormContainer from '@/components/sharedComponents/container/FormContainer.vue'
 import FormRow from '@/components/formRow/FormRow.vue'
 import Combobox from '@/components/combobox/Combobox.vue'
@@ -139,11 +140,11 @@ import InputTextbox from '@/components/inputTextbox/InputTextbox.vue'
 import InputDate from '@/components/inputDate/InputDate.vue'
 import InputFile from '@/components/inputFile/InputFile.vue'
 import InputReadOnlyText from '@/components/inputReadOnlyText/InputReadOnlyText.vue'
-import FieldValidIcon from '@/components/base/FieldValidIcon.vue'
-import { uniqueSerialRule } from '../validations/nomor-serial.validation'
-import { WarrantyRegistrationFormModel } from '../models/warranty-registration-form.model'
-import type { ProductCatalogModel } from '../models/warranty-registration.model'
+import InputValidationState from '@/components/base/InputValidationState.vue'
+import { WarrantyRegistrationFormModel } from '../models/warrantyRegistration.form.model'
 import { fotoInvoiceGuideSteps, nomorSerialGuideSteps } from '../composables/guide-steps'
+import type { ProductCatalogResponseModel } from '../models/warrantyRegistration.response.model'
+import { validateSerialAvailability } from '../validations/nomorSerial.validation'
 
 
 const form = defineModel<WarrantyRegistrationFormModel>({ required: true })
@@ -151,12 +152,16 @@ const invoiceFile = defineModel<File | null>('invoiceFile', { default: null })
 
 const props = defineProps({
   productCatalog: {
-    type: Array as () => ProductCatalogModel[],
+    type: Array as () => ProductCatalogResponseModel[],
     default: () => [],
   },
 })
 
 const today = new Date().toISOString().slice(0, 10)
+
+const isCheckingSerial = ref(false)
+
+
 
 const brandOptions = computed(() =>
   [...new Set(props.productCatalog.map((product) => product.merk))].map((brand) => ({ value: brand, label: brand })),

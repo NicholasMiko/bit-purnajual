@@ -1,16 +1,20 @@
-
-export const endPoint = {
+const endPoint = {
   repair: {
-    warrantyRegistration: '/api/repair/warranty-registration',
-    warrantyRegistrationById: (id: number | string) => `/api/repair/warranty-registration/${id}`,
-    product: '/api/repair/products',
-    checkSerial: (serial: string) => `/api/repair/warranty-registration/check-serial?serial=${encodeURIComponent(serial)}`,
+    warranty_registration: {
+      list: '/repair/warrantyregistration/v1/get-list',
+      view: '/repair/warrantyregistration/v1/get',
+      create: '/repair/warrantyregistration/v1/create',
+      checkSerial: '/repair/warrantyregistration/v1/check-serial',
+      listProduct: '/repair/warrantyregistration/v1/_get-list-product',
+    },
+    service_ticket: {
+      list: '/repair/serviceticket/v1/get-list',
+      view: '/repair/serviceticket/v1/get',
+      create: '/repair/serviceticket/v1/create',
+      update: '/repair/serviceticket/v1/update',
+      delete: '/repair/serviceticket/v1/delete',
+    },
   },
-  serviceTicket: {
-    list: '/api/tickets',
-    byId: (id: number | string) => `/api/tickets/${id}`,
-  },
-  utility: {
-    ping: '/api/ping',
-  },
-} as const
+}
+
+export default endPoint

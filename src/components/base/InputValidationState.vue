@@ -1,10 +1,10 @@
 <template>
   <span
-    v-if="isChecking"
-    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-brand-100 border-t-brand-500 motion-safe:animate-spin"
+    v-if="showSpinner"
+    class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-4 border-brand-200 border-t-brand-500 motion-safe:animate-spin"
   />
   <span
-    v-else-if="isValid"
+    v-else-if="showCheck"
     class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white"
   >
     <Icon :icon-types="iconType.Check" custom-class="h-4 w-4" />
@@ -26,12 +26,21 @@ const props = defineProps({
     type: Number,
     default: 500,
   },
+  deferred: {
+    type: Boolean,
+    default: false,
+  },
+  checking: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const fieldValue = useFieldValue<string>(() => props.name)
 const fieldValid = useIsFieldValid(() => props.name)
 
-const isChecking = ref(false)
+const isTimerRunning = ref(false)
+const hasCompletedCheck = ref(false)
 let checkTimer: ReturnType<typeof setTimeout> | undefined
 
 const isFilled = computed(() => {
@@ -39,21 +48,38 @@ const isFilled = computed(() => {
   return typeof currentValue === 'string' ? currentValue.trim().length > 0 : currentValue != null
 })
 
-const isValid = computed(() => isFilled.value && fieldValid.value)
+const showSpinner = computed(() => (props.deferred ? props.checking : isTimerRunning.value))
+
+const showCheck = computed(() => {
+  if (!isFilled.value || !fieldValid.value) return false
+  if (props.deferred) return !props.checking && hasCompletedCheck.value
+  return !isTimerRunning.value
+})
 
 watch(fieldValue, () => {
+  hasCompletedCheck.value = false
+
+  if (props.deferred) return
+
   clearCheckTimer()
 
-  // if (!isFilled.value) {
-  //   isChecking.value = false
-  //   return
-  // }
+  if (!isFilled.value) {
+    isTimerRunning.value = false
+    return
+  }
 
-  // isChecking.value = true
-  // checkTimer = setTimeout(() => {
-  //   isChecking.value = false
-  // }, props.checkDelay)
+  isTimerRunning.value = true
+  checkTimer = setTimeout(() => {
+    isTimerRunning.value = false
+  }, props.checkDelay)
 })
+
+watch(
+  () => props.checking,
+  (isChecking, wasChecking) => {
+    if (wasChecking && !isChecking) hasCompletedCheck.value = true
+  },
+)
 
 onBeforeUnmount(() => {
   clearCheckTimer()

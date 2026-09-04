@@ -18,8 +18,8 @@
       </button>
     </div>
 
-    <p v-if="ticketStore.error" class="rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-      {{ ticketStore.error }}
+    <p v-if="listError" class="rounded-md border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+      {{ listError }}
     </p>
 
     <PageContainer>
@@ -50,18 +50,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="ticketStore.isLoading">
+          <tr v-if="isLoading">
             <td colspan="7" class="px-4 py-6 text-center text-ink-500">
               Memuat data tiket...
             </td>
           </tr>
-          <tr v-else-if="ticketStore.tickets.length === 0">
+          <tr v-else-if="tickets.length === 0">
             <td colspan="7" class="px-4 py-6 text-center text-ink-500">
               Belum ada tiket servis.
             </td>
           </tr>
           <tr
-            v-for="ticket in ticketStore.tickets"
+            v-for="ticket in tickets"
             :key="ticket.id"
             class="border-b border-ink-100 last:border-0 hover:bg-ink-100/30"
           >
@@ -116,7 +116,7 @@
                 required
               />
               <template #after>
-                <FieldValidIcon name="nomorRegistrasi" />
+                <InputValidationState name="nomorRegistrasi" />
               </template>
             </FormRow>
 
@@ -142,7 +142,7 @@
                 required
               />
               <template #after>
-                <FieldValidIcon name="keluhan" />
+                <InputValidationState name="keluhan" />
               </template>
             </FormRow>
 
@@ -158,7 +158,7 @@
                 required
               />
               <template #after>
-                <FieldValidIcon name="status" />
+                <InputValidationState name="status" />
               </template>
             </FormRow>
 
@@ -225,20 +225,38 @@ import FormContainer from '@/components/sharedComponents/container/FormContainer
 import FormRow from '@/components/formRow/FormRow.vue'
 import Combobox from '@/components/combobox/Combobox.vue'
 import InputTextArea from '@/components/inputTextArea/InputTextArea.vue'
-import FieldValidIcon from '@/components/base/FieldValidIcon.vue'
+import InputValidationState from '@/components/base/InputValidationState.vue'
 import StatusBadge from '@/components/base/StatusBadge.vue'
-import { useServiceTicketStore } from '@/stores/serviceTickets'
-import { useWarrantyRegistrationStore } from '@/stores/useWarrantyRegistrationStore'
 import { ServiceTicketFormModel } from '@/models/service-ticket-form.model'
-import { TICKET_STATUS, type ServiceTicket, type ServiceTicketInput } from '@/models/serviceTicket'
+import {
+  TICKET_STATUS,
+  getServiceTicketList,
+  createServiceTicket,
+  updateServiceTicket,
+  deleteServiceTicket,
+  type ServiceTicketResponseModel,
+  type ServiceTicketCreatePayload,
+} from '@/services/serviceTicket.service'
+import { getWarrantyRegistrationList } from '@/modules/repair/warranty-registration/services/warrantyRegistration.service'
+import type { WarrantyRegistrationResponseModel } from '@/modules/repair/warranty-registration/models/warrantyRegistration.response.model'
 
-const ticketStore = useServiceTicketStore()
-const warrantyStore = useWarrantyRegistrationStore()
+const pagingRequest = {
+  requestType: 'LIST',
+  page: 1,
+  size: 100,
+  sortBy: {},
+  filterBy: {},
+}
+
+const tickets = ref<ServiceTicketResponseModel[]>([])
+const registrations = ref<WarrantyRegistrationResponseModel[]>([])
+const isLoading = ref(false)
+const listError = ref('')
 
 const form = ref(new ServiceTicketFormModel())
 const isFormOpen = ref(false)
 const editingId = ref<number | null>(null)
-const deletingTicket = ref<ServiceTicket | null>(null)
+const deletingTicket = ref<ServiceTicketResponseModel | null>(null)
 const formError = ref('')
 
 const { values, errors, resetForm } = useForm({ initialValues: new ServiceTicketFormModel() })
@@ -253,7 +271,7 @@ const statusTone: Record<string, string> = {
 const statusOptions = TICKET_STATUS.map((status) => ({ value: status, label: status }))
 
 const registrationOptions = computed(() =>
-  warrantyStore.registrations.map((registration) => ({
+  registrations.value.map((registration) => ({
     value: registration.nomorRegistrasi,
     label: `${registration.nomorRegistrasi} — ${registration.nama}`,
   })),
@@ -269,18 +287,40 @@ const isFormValid = computed(() => {
 })
 
 onMounted(() => {
-  ticketStore.fetchTickets()
-  warrantyStore.fetchRegistrations()
+  fetchTickets()
+  fetchRegistrations()
 })
 
 watch(
   () => form.value.nomorRegistrasi,
   (nomorRegistrasi) => {
-    const registration = warrantyStore.registrations.find((item) => item.nomorRegistrasi === nomorRegistrasi)
+    const registration = registrations.value.find((item) => item.nomorRegistrasi === nomorRegistrasi)
     form.value.namaPelanggan = registration ? registration.nama : ''
     form.value.produk = registration ? registration.namaProduk : ''
   },
 )
+
+async function fetchTickets() {
+  isLoading.value = true
+  listError.value = ''
+  try {
+    const result = await getServiceTicketList(pagingRequest)
+    tickets.value = result.content
+  } catch (error) {
+    listError.value = error instanceof Error ? error.message : 'Gagal memuat data tiket'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+async function fetchRegistrations() {
+  try {
+    const result = await getWarrantyRegistrationList(pagingRequest)
+    registrations.value = result.content
+  } catch (error) {
+    listError.value = error instanceof Error ? error.message : 'Gagal memuat data registrasi garansi'
+  }
+}
 
 function openCreateForm() {
   editingId.value = null
@@ -290,7 +330,7 @@ function openCreateForm() {
   isFormOpen.value = true
 }
 
-function openEditForm(ticket: ServiceTicket) {
+function openEditForm(ticket: ServiceTicketResponseModel) {
   editingId.value = ticket.id
   formError.value = ''
 
@@ -317,25 +357,26 @@ async function onSubmit(event: Event) {
   if (!isFormValid.value) return
 
   formError.value = ''
-  const payload: ServiceTicketInput = {
+  const payload: ServiceTicketCreatePayload = {
     nomorRegistrasi: form.value.nomorRegistrasi,
     keluhan: form.value.keluhan,
-    status: form.value.status as ServiceTicketInput['status'],
+    status: form.value.status as ServiceTicketCreatePayload['status'],
   }
 
   try {
     if (editingId.value) {
-      await ticketStore.updateTicket(editingId.value, payload)
+      await updateServiceTicket({ id: String(editingId.value), ...payload })
     } else {
-      await ticketStore.createTicket(payload)
+      await createServiceTicket(payload)
     }
+    await fetchTickets()
     closeForm()
   } catch (error) {
     formError.value = error instanceof Error ? error.message : 'Gagal menyimpan tiket'
   }
 }
 
-function askDelete(ticket: ServiceTicket) {
+function askDelete(ticket: ServiceTicketResponseModel) {
   deletingTicket.value = ticket
 }
 
@@ -345,7 +386,12 @@ function cancelDelete() {
 
 async function confirmDelete() {
   if (!deletingTicket.value) return
-  await ticketStore.deleteTicket(deletingTicket.value.id)
+  try {
+    await deleteServiceTicket({ id: String(deletingTicket.value.id) })
+    await fetchTickets()
+  } catch (error) {
+    listError.value = error instanceof Error ? error.message : 'Gagal menghapus tiket'
+  }
   deletingTicket.value = null
 }
 </script>

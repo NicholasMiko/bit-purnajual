@@ -23,7 +23,7 @@
         v-if="isPurchaseInfoStep"
         v-model="warrantyRegistrationForm"
         v-model:invoice-file="invoiceFile"
-        :product-catalog="store.productCatalog"
+        :product-catalog="productCatalog"
       />
 
       <BuyerDataForm
@@ -101,13 +101,18 @@ import { useForm } from 'vee-validate'
 import PageContainer from '@/components/sharedComponents/container/PageContainer.vue'
 import StepIndicator from '@/components/base/StepIndicator.vue'
 import ScrollToActionButton from '@/components/base/ScrollToActionButton.vue'
-import { useWarrantyRegistrationStore } from '@/stores/useWarrantyRegistrationStore'
-import { WarrantyRegistrationFormModel } from '../models/warranty-registration-form.model'
-import { WarrantyRegistrationStep } from '../models/warranty-registration-step.enum'
 import PurchaseInfoForm from '../components/PurchaseInfoForm.vue'
 import BuyerDataForm from '../components/BuyerDataForm.vue'
 import RegistrationReview from '../components/RegistrationReview.vue'
 import ConfirmationResponse from '../components/ConfirmationResponse.vue'
+import { WarrantyRegistrationFormModel } from '../models/warrantyRegistration.form.model'
+import { WarrantyRegistrationStep } from '../models/warrantyRegistration.step.enum'
+import {
+  getProductCatalogList,
+  createWarrantyRegistration,
+} from '../services/warrantyRegistration.service'
+import { mapToWarrantyRegistrationCreatePayload } from '../mappers/warrantyRegistration.mapper'
+import type { ProductCatalogResponseModel } from '../models/warrantyRegistration.response.model'
 
 const purchaseInfoFields = [
   'merk',
@@ -125,9 +130,16 @@ const buyerDataFields = ['nama', 'alamatTempatTinggal', 'nomorTelepon', 'alamatE
 
 const totalStep = 2
 
-const store = useWarrantyRegistrationStore()
+const pagingRequest = {
+  requestType: 'LIST',
+  page: 1,
+  size: 100,
+  sortBy: {},
+  filterBy: {},
+}
 
 const warrantyRegistrationForm = ref(new WarrantyRegistrationFormModel())
+const productCatalog = ref<ProductCatalogResponseModel[]>([])
 const invoiceFile = ref<File | null>(null)
 const ktpFile = ref<File | null>(null)
 
@@ -154,10 +166,18 @@ const isStepValid = computed(() => {
   })
 })
 
-onMounted(() => {
-  store.fetchRegistrations()
-  store.fetchProductCatalog()
+onMounted(async () => {
+  await fetchProductCatalog()
 })
+
+async function fetchProductCatalog() {
+  try {
+    const result = await getProductCatalogList(pagingRequest)
+    productCatalog.value = result.content
+  } catch (error) {
+    submitError.value = error instanceof Error ? error.message : 'Gagal memuat katalog produk'
+  }
+}
 
 function onNext() {
   if (!isStepValid.value) return
@@ -183,8 +203,9 @@ function onBack() {
 async function onSubmit() {
   submitError.value = ''
   try {
-    const created = await store.register(warrantyRegistrationForm.value)
-    nomorRegistrasi.value = created.nomorRegistrasi
+    const payload = mapToWarrantyRegistrationCreatePayload(warrantyRegistrationForm.value)
+    const response = await createWarrantyRegistration(payload)
+    nomorRegistrasi.value = String(response.result[0]?.id ?? '').replace('~uuid', '')
     isSubmitted.value = true
   } catch (error) {
     submitError.value = error instanceof Error ? error.message : 'Gagal menyimpan registrasi garansi'

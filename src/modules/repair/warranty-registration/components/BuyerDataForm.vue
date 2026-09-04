@@ -13,7 +13,7 @@
         required
       />
       <template #after>
-        <FieldValidIcon name="nama" />
+        <InputValidationState name="nama" />
       </template>
     </FormRow>
 
@@ -26,7 +26,7 @@
         required
       />
       <template #after>
-        <FieldValidIcon name="alamatTempatTinggal" />
+        <InputValidationState name="alamatTempatTinggal" />
       </template>
     </FormRow>
 
@@ -39,14 +39,14 @@
         required
       />
       <template #after>
-        <FieldValidIcon name="nomorTelepon" />
+        <InputValidationState name="nomorTelepon" />
       </template>
     </FormRow>
 
     <FormRow label="Alamat Email" :without-after="false">
       <InputEmail v-model="form.alamatEmail" name="alamatEmail" placeholder="Input Alamat Email" required />
       <template #after>
-        <FieldValidIcon name="alamatEmail" />
+        <InputValidationState name="alamatEmail" />
       </template>
     </FormRow>
 
@@ -63,7 +63,7 @@
         required
       />
       <template #after>
-        <FieldValidIcon name="fotoKtp" />
+        <InputValidationState name="fotoKtp" />
       </template>
     </FormRow>
   </FormContainer>
@@ -76,8 +76,8 @@ import InputTextbox from '@/components/inputTextbox/InputTextbox.vue'
 import InputEmail from '@/components/inputEmail/InputEmail.vue'
 import InputPhoneNumber from '@/components/inputPhoneNumber/InputPhoneNumber.vue'
 import InputFile from '@/components/inputFile/InputFile.vue'
-import FieldValidIcon from '@/components/base/FieldValidIcon.vue'
-import { WarrantyRegistrationFormModel } from '../models/warranty-registration-form.model'
+import InputValidationState from '@/components/base/InputValidationState.vue'
+import { WarrantyRegistrationFormModel } from '../models/warrantyRegistration.form.model'
 
 const form = defineModel<WarrantyRegistrationFormModel>({ required: true })
 const ktpFile = defineModel<File | null>('ktpFile', { default: null })
