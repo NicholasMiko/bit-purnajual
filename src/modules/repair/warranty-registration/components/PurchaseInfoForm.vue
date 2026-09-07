@@ -37,7 +37,7 @@
       </template>
     </FormRow>
 
-    <FormRow label="Nama Produk" :without-after="false">
+    <FormRow label="Nama Produk" :without-after="true">
       <InputReadOnlyText 
         v-model="form.namaProduk" 
         label="Nama Produk" 
@@ -50,6 +50,7 @@
 
     <FormRow
       label="Nomor Serial"
+      tooltip-string="Panduan mencari nomor serial produk"
       :guide-steps="nomorSerialGuideSteps"
       :without-after="false"
       content-col-span="col-span-12 sm:col-span-4"
@@ -114,6 +115,7 @@
 
     <FormRow
       label="Foto Invoice Pembelian"
+      tooltip-string="Panduan cara foto yang benar"
       :guide-steps="fotoInvoiceGuideSteps"
       :without-after="false"
     >
@@ -142,7 +144,7 @@ import InputFile from '@/components/inputFile/InputFile.vue'
 import InputReadOnlyText from '@/components/inputReadOnlyText/InputReadOnlyText.vue'
 import InputValidationState from '@/components/base/InputValidationState.vue'
 import { WarrantyRegistrationFormModel } from '../models/warrantyRegistration.form.model'
-import { fotoInvoiceGuideSteps, nomorSerialGuideSteps } from '../composables/guide-steps'
+import { fotoInvoiceGuideSteps, nomorSerialGuideSteps } from '../composables/guideSteps'
 import type { ProductCatalogResponseModel } from '../models/warrantyRegistration.response.model'
 import { validateSerialAvailability } from '../validations/nomorSerial.validation'
 

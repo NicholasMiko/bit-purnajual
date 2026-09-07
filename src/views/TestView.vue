@@ -78,18 +78,6 @@
           </template>
         </FormRow>
 
-        <FormRow label="Tanpa pilihan" without-after>
-          <Combobox
-            v-model="form.comboEmpty"
-            name="comboEmpty"
-            label="Tanpa pilihan"
-            value-key="value"
-            label-key="label"
-            place-holder="Belum ada data"
-            :options="[]"
-          />
-        </FormRow>
-
         <FormRow label="Nonaktif" without-after>
           <Combobox
             v-model="form.comboDisabled"
@@ -213,7 +201,7 @@
         </FormRow>
 
         <FormRow label="Kolom pendek" without-after content-col-span="col-span-12 sm:col-span-4">
-          <InputTextbox v-model="form.shortColumn" name="shortColumn" label="Kolom pendek" place-holder="Lebar dipersempit" />
+          <InputTextbox v-model="form.shortColumn" name="shortColumn" label="Kolom pendek" place-holder="test123" />
         </FormRow>
       </FormContainer>
     </PageContainer>

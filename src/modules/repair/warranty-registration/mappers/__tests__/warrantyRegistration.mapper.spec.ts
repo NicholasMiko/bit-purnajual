@@ -27,30 +27,51 @@ const response: WarrantyRegistrationResponseModel = {
   tanggalRegistrasi: '2026-04-01',
 }
 
+const expectedForm = {
+  merk: 'SHIMIZU',
+  tipeProduk: 'PB-288BIT',
+  namaProduk: 'POMPA BOOSTER SHIMIZU PB-288BIT',
+  nomorSerial: 'CAB340149',
+  namaToko: 'Toko Jaya',
+  kota: 'Jakarta',
+  tanggalPembelian: '2026-03-30',
+  invoice: 'INV-000123',
+  fotoInvoicePembelian: 'invoice.jpg',
+  nama: 'Joni Esmud',
+  alamatTempatTinggal: 'Jl. Mawar 5',
+  nomorTelepon: '081234567890',
+  alamatEmail: 'joni@mail.com',
+  fotoKtp: 'ktp.jpg',
+}
+
 describe('warrantyRegistration mapper', () => {
-  it('memetakan response ke form model', () => {
+  it('memetakan seluruh field response ke form model', () => {
     const form = mapWarrantyRegistrationResponseToFormModel(response)
 
     expect(form).toBeInstanceOf(WarrantyRegistrationFormModel)
-    expect(form.merk).toBe('SHIMIZU')
-    expect(form.nomorSerial).toBe('CAB340149')
-    expect(form.nama).toBe('Joni Esmud')
+    expect({ ...form }).toEqual(expectedForm)
   })
 
-  it('tidak membawa field milik response ke form model', () => {
+  it('tidak membawa field milik server ke form model', () => {
     const form = mapWarrantyRegistrationResponseToFormModel(response)
 
     expect(form).not.toHaveProperty('id')
     expect(form).not.toHaveProperty('nomorRegistrasi')
     expect(form).not.toHaveProperty('status')
+    expect(form).not.toHaveProperty('tanggalRegistrasi')
   })
 
-  it('memetakan form model ke payload create', () => {
+  it('memetakan seluruh field form model ke payload create', () => {
     const form = mapWarrantyRegistrationResponseToFormModel(response)
     const payload = mapToWarrantyRegistrationCreatePayload(form)
 
-    expect(payload.nomorSerial).toBe('CAB340149')
-    expect(payload.alamatEmail).toBe('joni@mail.com')
+    expect(payload).toEqual(expectedForm)
+  })
+
+  it('mengirim payload dengan jumlah field yang tepat', () => {
+    const form = new WarrantyRegistrationFormModel()
+    const payload = mapToWarrantyRegistrationCreatePayload(form)
+
     expect(Object.keys(payload)).toHaveLength(14)
   })
 })

@@ -6,7 +6,7 @@
           :id="name"
           v-model="value"
           :disabled="disabled"
-          class="h-9 w-full appearance-none rounded-md border bg-white px-3 pr-10 text-sm shadow-xs focus:outline-none focus:ring-1"
+          class="h-10 w-full appearance-none rounded-md border bg-white px-3 pr-10 text-sm shadow-xs focus:outline-none focus:ring-1"
           :class="[
             disabled
               ? 'border-brand-500 bg-ink-100 text-ink-500'

@@ -52,7 +52,8 @@
 
     <FormRow
       label="Foto KTP"
-      tooltip-string="Pastikan foto KTP jelas dan tidak terpotong"
+      tooltip-string="Panduan foto KTP yang benar"
+      :guide-steps="fotoKtpGuideSteps"
       :without-after="false"
     >
       <InputFile
@@ -78,6 +79,7 @@ import InputPhoneNumber from '@/components/inputPhoneNumber/InputPhoneNumber.vue
 import InputFile from '@/components/inputFile/InputFile.vue'
 import InputValidationState from '@/components/base/InputValidationState.vue'
 import { WarrantyRegistrationFormModel } from '../models/warrantyRegistration.form.model'
+import { fotoKtpGuideSteps } from '../composables/guideSteps'
 
 const form = defineModel<WarrantyRegistrationFormModel>({ required: true })
 const ktpFile = defineModel<File | null>('ktpFile', { default: null })

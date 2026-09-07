@@ -1,4 +1,5 @@
-import type { GuideStepModel } from '@/models/guide-step.model'
+import type { GuideStepModel } from "@/models/guide-step"
+
 
 export const nomorSerialGuideSteps: GuideStepModel[] = [
   { title: 'Step Panduan 1' },
@@ -9,4 +10,8 @@ export const nomorSerialGuideSteps: GuideStepModel[] = [
 
 export const fotoInvoiceGuideSteps: GuideStepModel[] = [
   { title: 'Panduan Foto yang Benar' },
+]
+
+export const fotoKtpGuideSteps: GuideStepModel[] = [
+  { title: 'Panduan Foto KTP yang Benar' },
 ]

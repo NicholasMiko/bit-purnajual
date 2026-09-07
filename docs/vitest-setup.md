@@ -14,6 +14,7 @@ command install (vitest coverage v8):
 
 run 
 `npm run test:unit`
+`npx vitest run`
 
 ### warrantyRegistration.mapper.spec.ts
 `src\modules\repair\warranty-registration\mappers\__tests__\warrantyRegistration.mapper.spec.ts`
@@ -104,3 +105,56 @@ FASE 4: NORMALISASI NILAI
 - Memastikan `.trim()` benar-benar diterapkan, sehingga spasi di awal dan akhir input tidak ikut tersimpan ke database.
 	
 - Menjaga konsistensi data antara yang diketik user dan yang dikirim ke backend.
+
+
+### Percobaan 1 — tukar field di mapper
+
+Buka `src/modules/repair/warranty-registration/mappers/warrantyRegistration.mapper.ts`, ubah satu baris:
+
+ts
+
+```ts
+form.merk = response.tipeProduk
+```
+
+(dari `response.merk`)
+
+Jalankan `npm run test:unit`. Test **"memetakan response ke form model"** harus gagal, dengan pesan kira-kira `expected 'PB-288BIT' to be 'SHIMIZU'`.
+
+TypeScript diam saja, karena dua-duanya `string`.
+
+### Percobaan 2 — hapus satu field dari payload
+
+Di file yang sama, hapus satu baris dari `mapToWarrantyRegistrationCreatePayload`, misalnya `kota: form.kota,`.
+
+Test **"memetakan form model ke payload create"** harus gagal: `expected 13 to be 14`.
+
+Ini yang menjaga kalau ada field baru ditambahkan tapi lupa dipetakan.
+
+### Percobaan 3 — ubah pesan error serial
+
+Buka `src/modules/repair/warranty-registration/validations/nomorSerial.validation.ts`, ubah pesan cadangannya:
+
+ts
+
+```ts
+'Gagal cek serial.'
+```
+
+(dari `'Gagal memeriksa nomor serial.'`)
+
+Test **"mengembalikan pesan umum saat error tanpa keterangan"** harus gagal.
+
+### Percobaan 4 — yang TIDAK tertangkap
+
+Buka `src/endPoint.ts`, ubah:
+
+ts
+
+```ts
+list: '/repair/warrantyregistration/v1/get-lists',
+```
+
+Jalankan test lagi — **semua tetap lolos**. Padahal aplikasi sudah rusak.
+
+Itu lubang yang aku sebut tadi.

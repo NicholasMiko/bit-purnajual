@@ -1,13 +1,12 @@
 import endPoint from '@/endPoint'
 import type { PagingDataV2 } from '@/models/paging.types'
-import type { ApiResponse } from '@/models/responseMessage.model'
+import type { ApiResponse } from '@/models/responseMessage'
 import type { Result } from '@/models/page'
 import { Get, Post } from '@/services/apiTemplate.service'
 
 export const TICKET_STATUS = [
   'Menunggu',
   'Diproses',
-  'Menunggu Sparepart',
   'Selesai',
   'Dibatalkan',
 ] as const

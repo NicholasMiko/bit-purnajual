@@ -1,5 +1,5 @@
 import fetchRequest from '@/fetchRequest'
-import type { ApiResponse } from '@/models/responseMessage.model'
+import type { ApiResponse } from '@/models/responseMessage'
 import type { RequestResponse } from '@/models/api'
 import { generateFlowId } from '@/util/generateFlowId'
 import { useLoading } from '@/composable/useLoading'

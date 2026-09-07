@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-/** Figma Version : v1.1.3 **/
+/** Figma Version : v1.1.1 **/
 </script>

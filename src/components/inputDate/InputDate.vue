@@ -4,7 +4,7 @@
       <button
         type="button"
         :disabled="disabled"
-        class="flex h-9 w-full items-center justify-between rounded-md border bg-white px-3 text-left text-sm shadow-xs focus:outline-none focus:ring-1"
+        class="flex h-10 w-full items-center justify-between rounded-md border bg-white px-3 text-left text-sm shadow-xs focus:outline-none focus:ring-1"
         :class="[
           disabled
             ? 'border-brand-500 bg-ink-100 text-ink-500'

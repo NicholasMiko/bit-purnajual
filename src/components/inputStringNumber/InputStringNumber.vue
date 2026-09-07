@@ -7,7 +7,7 @@
         :disabled="disabled"
         :readonly="isReadOnly"
         :placeholder="placeholder"
-        class="h-9 w-full rounded-md border p-2 text-sm shadow-xs focus:outline-none focus:ring-1"
+        class="h-10 w-full rounded-md border p-2 text-sm shadow-xs focus:outline-none focus:ring-1"
         :class="[
           disabled
             ? 'border-brand-500 bg-ink-100 text-ink-500'

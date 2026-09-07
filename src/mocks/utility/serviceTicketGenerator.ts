@@ -16,7 +16,7 @@ export function buildTicket(id: number): ServiceTicketResponseModel {
     namaPelanggan: registration.nama,
     produk: registration.namaProduk,
     keluhan: faker.lorem.sentence(),
-    status: faker.helpers.arrayElement(['Menunggu', 'Diproses', 'Menunggu Sparepart', 'Selesai']),
+    status: faker.helpers.arrayElement(['Menunggu', 'Diproses', 'Selesai']),
     tanggalMasuk: faker.date.recent({ days: 14 }).toISOString().slice(0, 10),
   }
 }

@@ -3,9 +3,7 @@ import * as yup from 'yup'
 export function withDefaultGeneralInputTextRule(allowSpace: boolean, required: boolean, allowSlash: boolean, label = '') {
   let schema = yup.string().trim()
 
-  if (label) {
-    schema = schema.label(label)
-  }
+  schema = schema.label(label || 'Field ini')
 
   if (required) {
     schema = schema.required('${path} wajib diisi')

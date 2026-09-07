@@ -1,7 +1,7 @@
 <template>
   <div class="grid w-full grid-rows-1 gap-2">
     <div>
-      <p class="text-sm text-ink-900">
+      <p class="text-m text-ink-900">
         {{ value || placeHolder }}
       </p>
       <ErrorMessages :errors="errors" />

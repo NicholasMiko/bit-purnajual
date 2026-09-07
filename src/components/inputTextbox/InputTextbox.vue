@@ -8,13 +8,13 @@
         :disabled="disabled"
         :placeholder="placeHolder"
         :readonly="isReadOnly"
-        class="h-9 w-full rounded-md border p-2 text-sm shadow-xs focus:outline-none focus:ring-1"
+        class="h-10 w-full rounded-md border p-2 text-sm shadow-xs focus:outline-none focus:ring-1"
         :class="[
           disabled
-            ? 'border-brand-200 bg-ink-100 text-ink-500'
+            ? 'border-brand-500 bg-ink-100 text-ink-500'
             : meta.touched && errors.length
               ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-400'
-              : 'border-brand-200 focus:border-brand-500 focus:ring-brand-500',
+              : 'border-brand-500 focus:border-brand-500 focus:ring-brand-500',
           externalClasses,
         ]"
         @blur="onBlur"
@@ -72,7 +72,7 @@ const props = defineProps({
   },
   uppercase: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   allowSpace: {
     type: Boolean,

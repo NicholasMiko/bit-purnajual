@@ -1,4 +1,4 @@
-import type { ApiResponse } from '@/models/responseMessage.model'
+import type { ApiResponse } from '@/models/responseMessage'
 import { RequestType } from '@/services/automic.enum'
 
 export async function handleErrorResponse(response: Response, requestType: RequestType): Promise<never> {

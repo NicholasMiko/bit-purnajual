@@ -5,20 +5,21 @@
         <div class="font-semibold text-ink-700">
           <label v-if="label">{{ label }}</label>
 
-          <button
-            v-if="hasGuide"
-            type="button"
-            class="ml-1 inline-block align-middle text-ink-500 hover:text-brand-500"
-            @click="openGuide"
-          >
-            <Icon :icon-types="iconType.Info" custom-class="h-4 w-4" />
-          </button>
+          <span v-if="tooltipString || hasGuide" class="group relative ml-1 inline-block align-middle">
+            <button
+              ref="tooltipIconRef"
+              type="button"
+              class="align-middle text-ink-500 hover:text-brand-500"
+              :class="{ 'cursor-default': !hasGuide }"
+              @click="toggleGuide"
+            >
+              <Icon :icon-types="iconType.Info" custom-class="h-4 w-4" />
+            </button>
 
-          <span v-else-if="tooltipString" class="group relative ml-1 inline-block align-middle">
-            <Icon :icon-types="iconType.Info" custom-class="h-4 w-4 text-ink-500" />
             <span
-              class="invisible absolute left-2 top-full z-10 mt-2 w-40 -translate-x-2 rounded-sm bg-ink-950
-                     px-2 py-2 text-center text-xs text-white opacity-0 transition
+              v-if="tooltipString && !isGuideOpen"
+              class="invisible absolute left-1/2 top-full z-30 mt-2 w-44 -translate-x-1/2 rounded-md bg-ink-950
+                     px-2 py-1.5 text-center text-xs font-normal text-white opacity-0 transition
                      group-hover:visible group-hover:opacity-100"
             >
               {{ tooltipString }}
@@ -39,16 +40,17 @@
       <slot name="after" />
     </div>
 
-    <GuideModal v-if="isGuideOpen" :steps="guideSteps" @close="closeGuide" />
+    <GuidePopUp v-if="isGuideOpen" :steps="guideSteps" :anchor="tooltipIconRef" @close="closeGuide" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import Icon from '@/components/icons/Icon.vue'
-import GuideModal from '@/components/base/GuideModal.vue'
+import GuidePopUp from '@/components/base/GuidePopUp.vue'
 import { iconType } from '@/models/enum/iconType'
-import type { GuideStepModel } from '@/models/guide-step.model'
+import type { GuideStepModel } from '@/models/guide-step'
+
 
 const props = defineProps({
   label: {
@@ -77,12 +79,14 @@ const props = defineProps({
   },
 })
 
+const tooltipIconRef = ref<HTMLElement | null>(null)
 const isGuideOpen = ref(false)
 
 const hasGuide = computed(() => props.guideSteps.length > 0)
 
-function openGuide() {
-  isGuideOpen.value = true
+function toggleGuide() {
+  if (!hasGuide.value) return
+  isGuideOpen.value = !isGuideOpen.value
 }
 
 function closeGuide() {
