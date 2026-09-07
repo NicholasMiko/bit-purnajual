@@ -29,7 +29,7 @@
           class="pointer-events-none absolute inset-y-0 right-3 flex items-center"
           :class="disabled ? 'text-ink-300' : 'text-brand-500'"
         >
-          <Icon :icon-types="iconType.Chevron" custom-class="h-4 w-4" />
+          <Icon :icon-types="iconType.Chevron" custom-class="h-6 w-6" />
         </span>
       </div>
 
