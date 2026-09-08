@@ -4,11 +4,11 @@ export const utilityRoutes: RouteRecordRaw[] = [
   {
     path: '/tiket-servis',
     name: 'service-tickets',
-    component: () => import('@/views/ServiceTicketsView.vue'),
+    component: () => import('@/modules/service-ticket/ServiceTicketsView.vue'),
   },
   {
     path: '/test',
     name: 'test',
-    component: () => import('@/views/TestView.vue'),
+    component: () => import('@/modules/test-view/TestView.vue'),
   },
 ]

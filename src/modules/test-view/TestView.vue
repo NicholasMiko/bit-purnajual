@@ -2,17 +2,13 @@
   <section class="space-y-6">
     <div>
       <h1 class="text-2xl font-semibold text-ink-950">
-        Katalog Komponen
+        Katalog Komponenx
       </h1>
     </div>
 
     <PageContainer>
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Input Textbox
-        </h2>
-
-        <FormRow label="Huruf kapital" :without-after="false">
+        <FormRow label="Input Textbox" :without-after="false">
           <InputTextbox
             v-model="form.textboxUppercase" name="textboxUppercase" label="Huruf kapital" place-holder="Otomatis kapital"
             uppercase
@@ -21,30 +17,17 @@
             <InputValidationState name="textboxUppercase" />
           </template>
         </FormRow>
-
-        <FormRow label="Nonaktif" without-after>
-          <InputTextbox
-            v-model="form.textboxDisabled" name="textboxDisabled" label="Nonaktif" place-holder="Tidak bisa diisi"
-            disabled
-          />
-        </FormRow>
       </FormContainer>
-    </PageContainer>
 
-    <PageContainer>
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Input Email dan Nomor Telepon
-        </h2>
-
-        <FormRow label="Email" :without-after="false">
-          <InputEmail v-model="form.email" name="email" placeholder="nama@perusahaan.com" required />
+        <FormRow label="EInput mail" :without-after="false">
+          <InputEmail v-model="form.email" name="Email" placeholder="nama@perusahaan.com" required />
           <template #after>
             <InputValidationState name="email" />
           </template>
         </FormRow>
 
-        <FormRow label="Nomor telepon" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
+        <FormRow label="Input Nomor telepon" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
           <InputPhoneNumber
             v-model="form.phone" name="phone" label="Nomor telepon" placeholder="08xxxxxxxxxx"
             required
@@ -54,15 +37,11 @@
           </template>
         </FormRow>
       </FormContainer>
-    </PageContainer>
 
-    <PageContainer>
+
+
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Combobox
-        </h2>
-
-        <FormRow label="Pilihan tersedia" :without-after="false">
+        <FormRow label="Combobox" :without-after="false">
           <Combobox
             v-model="form.comboFilled"
             name="comboFilled"
@@ -77,54 +56,26 @@
             <InputValidationState name="comboFilled" />
           </template>
         </FormRow>
-
-        <FormRow label="Nonaktif" without-after>
-          <Combobox
-            v-model="form.comboDisabled"
-            name="comboDisabled"
-            label="Nonaktif"
-            value-key="value"
-            label-key="label"
-            place-holder="Tidak bisa dipilih"
-            :options="sampleOptions"
-            disabled
-          />
-        </FormRow>
       </FormContainer>
-    </PageContainer>
 
-    <PageContainer>
+    
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Input Date
-        </h2>
-
-        <FormRow label="Bebas" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
+        <FormRow label="Input Date" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
           <InputDate v-model="form.dateFree" name="dateFree" required />
           <template #after>
             <InputValidationState name="dateFree" />
           </template>
         </FormRow>
 
-        <FormRow label="Maks. Current Date" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
+        <FormRow label="Input Date Maks. Current Date" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
           <InputDate v-model="form.datePast" name="datePast" :max-date="today" required />
           <template #after>
             <InputValidationState name="datePast" />
           </template>
         </FormRow>
-
-        <FormRow label="Nonaktif" without-after content-col-span="col-span-12 sm:col-span-4">
-          <InputDate v-model="form.dateDisabled" name="dateDisabled" disabled />
-        </FormRow>
       </FormContainer>
-    </PageContainer>
 
-    <PageContainer>
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Input Text Area
-        </h2>
-
         <FormRow label="Remarks" :without-after="false">
           <InputTextArea
             v-model="form.textArea"
@@ -139,14 +90,8 @@
           </template>
         </FormRow>
       </FormContainer>
-    </PageContainer>
-
-    <PageContainer>
+  
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Input File
-        </h2>
-
         <FormRow label="Upload File" tooltip-string="Format JPG atau PNG, maksimal 2 MB" :without-after="false">
           <InputFile
             v-model="form.file" v-model:file="uploadedFile" name="file" hint="Upload 1 supported file: JPG, PNG. Max 2 MB."
@@ -161,15 +106,9 @@
           <FilePreview :file="uploadedFile" />
         </FormRow>
       </FormContainer>
-    </PageContainer>
-
-    <PageContainer>
+  
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Input Read Only Text
-        </h2>
-
-        <FormRow label="Reactive" :without-after="false">
+        <FormRow label="Input Read Only Text" :without-after="false">
           <InputReadOnlyText v-model="form.readOnly" name="readOnly" label="Reactive" />
           <template #after>
             <InputValidationState name="readOnly" />
@@ -180,14 +119,8 @@
           <InputTextbox v-model="form.readOnly" name="readOnlySource" label="Isi" place-holder="Ketik di sini" />
         </FormRow>
       </FormContainer>
-    </PageContainer>
 
-    <PageContainer>
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Form Row
-        </h2>
-
         <FormRow label="Tooltip" :guide-steps="sampleGuideSteps" without-after>
           <p class="text-sm text-ink-500">
             Klik ikon tooltip.
@@ -206,12 +139,12 @@
       </FormContainer>
     </PageContainer>
 
+    <h1 class="text-2xl font-semibold text-ink-950">
+      Icons
+    </h1>
+
     <PageContainer>
       <FormContainer>
-        <h2 class="text-base font-semibold text-ink-950">
-          Komponen Tampilan
-        </h2>
-
         <FormRow label="Status badge" without-after>
           <div class="flex flex-wrap gap-2">
             <StatusBadge status="Menunggu" :tone-map="statusTone" />

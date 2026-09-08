@@ -1,10 +1,11 @@
 import { type RouteRecordRaw } from 'vue-router'
 import { Mode } from '@/models/enum/mode'
-import WarrantyRegistrationComponent from '@/modules/repair/warranty-registration/WarrantyRegistrationComponent.vue'
-import WarrantyRegistrationMain from '@/modules/repair/warranty-registration/views/WarrantyRegistrationMain.vue'
+
+const WarrantyRegistrationComponent = () => import("@/modules/repair/warranty-registration/WarrantyRegistrationComponent.vue")
+const WarrantyRegistrationMain = () => import("@/modules/repair/warranty-registration/views/WarrantyRegistrationMain.vue")
 
 const warrantyRegistration: RouteRecordRaw = {
-  path: '/',
+  path: 'registrasi-garansi-pembelian',
   name: 'warrantyregistration',
   component: WarrantyRegistrationComponent,
   redirect: { name: 'warrantyregistration-create' },

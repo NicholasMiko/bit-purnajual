@@ -40,14 +40,14 @@
       <slot name="after" />
     </div>
 
-    <GuidePopUp v-if="isGuideOpen" :steps="guideSteps" :anchor="tooltipIconRef" @close="closeGuide" />
+    <GuidePopup v-if="isGuideOpen" :steps="guideSteps" :anchor="tooltipIconRef" @close="closeGuide" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import Icon from '@/components/icons/Icon.vue'
-import GuidePopUp from '@/components/base/GuidePopUp.vue'
+import GuidePopup from '@/components/base/GuidePopup.vue'
 import { iconType } from '@/models/enum/iconType'
 import type { GuideStepModel } from '@/models/guide-step'
 
