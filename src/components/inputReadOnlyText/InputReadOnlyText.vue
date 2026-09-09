@@ -48,7 +48,7 @@ const { value, errors, validate, meta } = useField<string>(
 
 function refreshDisabledRule() {
   disabledRule.value = props.required
-    ? yup.string().trim().label(props.label || props.name).required('${path} wajib terisi')
+    ? yup.string().trim().label(props.label || props.name).required('* ${path} wajib terisi')
     : yup.string().trim()
 }
 

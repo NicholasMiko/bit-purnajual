@@ -1,7 +1,6 @@
 <template>
   <SideBar v-model="isMenuOpen" />
   <TopBar v-model="isMenuOpen" />
-
   <div class="">
     <main class="mt-14">
       <RouterView />

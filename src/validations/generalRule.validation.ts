@@ -6,7 +6,7 @@ export function withDefaultGeneralInputTextRule(allowSpace: boolean, required: b
   schema = schema.label(label || 'Field ini')
 
   if (required) {
-    schema = schema.required('${path} wajib diisi')
+    schema = schema.required('* ${path} wajib diisi')
   }
 
   if (!allowSpace) {

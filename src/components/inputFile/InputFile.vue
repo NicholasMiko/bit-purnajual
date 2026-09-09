@@ -11,7 +11,10 @@
       >
 
       <div v-if="value" class="flex w-full items-center gap-4">
-        <div class="flex flex-1 items-center justify-between rounded-lg border border-brand-500 bg-white p-3 shadow-sm">
+        <div
+          class="flex flex-1 items-center justify-between rounded-lg border bg-white p-3 shadow-sm"
+          :class="[borderClass, externalClasses]"
+        >
           <div class="flex items-center gap-4">
             <div class="relative flex h-11 w-9 flex-col items-center justify-center rounded border border-brand-100 bg-brand-50">
               <Icon :icon-types="iconType.Document" custom-class="h-6 w-6 text-brand-500" />
@@ -56,7 +59,8 @@
         v-else
         type="button"
         :disabled="disabled"
-        class="inline-flex items-center gap-2 rounded-md border border-brand-500 bg-white px-4 py-2 text-sm font-medium text-ink-700 hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-60"
+        class="inline-flex items-center gap-2 rounded-md border bg-white px-4 py-2 text-sm font-medium text-ink-700 hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-60"
+        :class="[borderClass, externalClasses]"
         @click="openFileBrowser"
       >
         <Icon :icon-types="iconType.Upload" custom-class="h-4 w-4" />
@@ -113,6 +117,10 @@ const props = defineProps({
     type: Number,
     default: 2,
   },
+  externalClasses: {
+    type: [String, Array, Object],
+    default: '',
+  },
 })
 
 defineModel<string>({ default: '' })
@@ -121,6 +129,7 @@ const selectedFile = defineModel<File | null>('file', { default: null })
 
 const inputRef = ref<HTMLInputElement | null>(null)
 const isSizeWarningVisible = ref(false)
+const hasInteracted = ref(false)
 const disabledRule = ref<yup.StringSchema<string | undefined>>()
 
 refreshDisabledRule()
@@ -138,6 +147,12 @@ const fileTypeLabel = computed(() => {
   return extension ? extension.toUpperCase().slice(0, 4) : 'FILE'
 })
 
+const borderClass = computed(() => {
+  if (props.disabled) return 'border-brand-500 bg-ink-100 text-ink-500'
+  if ((hasInteracted.value || meta.touched) && props.required && !value.value) return 'border-rose-400'
+  return 'border-brand-500'
+})
+
 watch(
   () => props.disabled,
   () => {
@@ -149,7 +164,7 @@ function refreshDisabledRule() {
   disabledRule.value = props.disabled
     ? yup.string()
     : props.required
-      ? yup.string().required('File wajib diunggah')
+      ? yup.string().required('* File wajib diunggah')
       : yup.string()
 }
 
@@ -167,6 +182,8 @@ function onFileSelected(event: Event) {
     target.value = ''
     return
   }
+
+  if (file) hasInteracted.value = true
 
   selectedFile.value = file
   value.value = file ? file.name : ''

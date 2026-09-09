@@ -98,7 +98,7 @@ function refreshDisabledRule() {
   }
 
   const baseRule = props.required
-    ? yup.string().trim().label(props.label || props.name).required('${path} wajib diisi')
+    ? yup.string().trim().label(props.label || props.name).required('* ${path} wajib diisi')
     : yup.string().trim()
   const additionalRules = props.additionalRules as yup.StringSchema<string, yup.AnyObject, undefined, ''> | undefined
 

@@ -114,13 +114,18 @@
     />
   </svg>
 
-  <svg
-    v-else-if="iconTypes === iconType.Warning" viewBox="0 0 24 24" fill="none" :class="customClass"
+  <svg 
+    v-else-if="iconTypes === iconType.Warning" viewBox="0 0 24 24" fill="none" :class="customClass" 
     aria-hidden="true"
   >
-    <path d="M12 3l9 16.5H3L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-    <path d="M12 10v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-    <circle cx="12" cy="17" r="1" fill="currentColor" />
+    <path
+      d="M8.4 2.5h7.2l5.9 5.9v7.2l-5.9 5.9H8.4L2.5 15.6V8.4z"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linejoin="round"
+    />
+    <path d="M12 7.5v5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+    <path d="M12 16.5h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
   </svg>
 </template>
 

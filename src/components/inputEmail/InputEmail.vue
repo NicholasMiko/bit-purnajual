@@ -98,7 +98,7 @@ function refreshDisabledRule() {
     })
 
   if (props.required) {
-    baseRule = baseRule.required('Email wajib diisi')
+    baseRule = baseRule.required('* Email wajib diisi')
   }
 
   const additionalRules = props.additionalRules as yup.StringSchema<string, yup.AnyObject, undefined, ''> | undefined
