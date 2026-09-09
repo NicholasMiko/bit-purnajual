@@ -4,9 +4,10 @@
       <nav class="flex flex-col gap-1">
         <RouterLink
           v-for="item in menuItems"
-          :key="item.name"
-          :to="{ name: item.name }"
-          class="rounded-md px-3 py-2 text-xl"
+          :key="item.label"
+          :to="item.to"
+          class="rounded-md px-3 py-2 text-sm transition-colors hover:bg-white/10"
+          active-class="bg-white/15 font-semibold"
           @click="closeMenu"
         >
           {{ item.label }}
@@ -23,9 +24,10 @@ import SlideBar from '../slideBar/SlideBar.vue'
 const isMenuOpen = defineModel<boolean>({ default: false })
 
 const menuItems = [
-  { name: 'warrantyregistration-create', label: 'Registrasi Garansi Pembelian' },
-  { name: 'service-tickets', label: 'Tiket Servis' },
-  { name: 'test', label: 'Test' },
+  {
+    label: 'Registrasi Garansi Pembelian',
+    to: { name: 'warrantyregistration-create', params: { step: 'step1' } },
+  },
 ]
 
 function closeMenu() {

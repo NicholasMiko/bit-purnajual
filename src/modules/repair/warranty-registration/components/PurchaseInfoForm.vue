@@ -16,7 +16,7 @@
         required
       />
       <template #after>
-        <InputValidationState name="merk" />
+        <InputValidationState name="merk" :check-delay="50" />
       </template>
     </FormRow>
 
@@ -33,7 +33,7 @@
         required
       />
       <template #after>
-        <InputValidationState name="tipeProduk" />
+        <InputValidationState name="tipeProduk" :check-delay="50" />
       </template>
     </FormRow>
 
@@ -44,7 +44,7 @@
         name="namaProduk" required 
       />
       <template #after>
-        <InputValidationState name="namaProduk" />
+        <InputValidationState name="namaProduk" :check-delay="50" />
       </template>
     </FormRow>
 
@@ -77,7 +77,7 @@
         place-holder="Input Nama Toko" required
       />
       <template #after>
-        <InputValidationState name="namaToko" />
+        <InputValidationState name="namaToko" :check-delay="50" />
       </template>
     </FormRow>
 
@@ -90,14 +90,14 @@
         required 
       />
       <template #after>
-        <InputValidationState name="kota" />
+        <InputValidationState name="kota" :check-delay="50" />
       </template>
     </FormRow>
 
     <FormRow label="Tanggal Pembelian" :without-after="false" content-col-span="col-span-12 sm:col-span-4">
       <InputDate v-model="form.tanggalPembelian" name="tanggalPembelian" :max-date="today" required />
       <template #after>
-        <InputValidationState name="tanggalPembelian" />
+        <InputValidationState name="tanggalPembelian" :check-delay="50" />
       </template>
     </FormRow>
 
@@ -109,7 +109,7 @@
         place-holder="Input Invoice" required
       />
       <template #after>
-        <InputValidationState name="invoice" />
+        <InputValidationState name="invoice" :check-delay="50" />
       </template>
     </FormRow>
 
@@ -127,7 +127,7 @@
         required
       />
       <template #after>
-        <InputValidationState name="fotoInvoicePembelian" />
+        <InputValidationState name="fotoInvoicePembelian" :check-delay="50" />
       </template>
     </FormRow>
   </FormContainer>

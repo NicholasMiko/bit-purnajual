@@ -94,6 +94,7 @@ const isCheckingAsync = defineModel<boolean>('checking', { default: false })
 
 const disabledRule = ref<yup.StringSchema<string | undefined>>()
 const hasAsyncError = ref(false)
+const lastCheckedValue = ref('')
 
 refreshDisabledRule()
 
@@ -113,9 +114,11 @@ watch(
 )
 
 watch(value, () => {
+  lastCheckedValue.value = ''
+
   if (!hasAsyncError.value) return
   hasAsyncError.value = false
-  validate()
+  setErrors([])
 })
 
 function refreshDisabledRule() {
@@ -138,16 +141,20 @@ async function onBlur() {
   handleBlur()
 
   if (!props.asyncValidator || props.disabled) return
-
   const currentValue = value.value?.trim() ?? ''
   if (!currentValue) return
 
+  if (currentValue === lastCheckedValue.value) return
+
   const result = await validate()
+
   if (!result.valid) return
 
   isCheckingAsync.value = true
   try {
     const asyncResult = await props.asyncValidator(currentValue)
+    lastCheckedValue.value = currentValue
+
     if (asyncResult === true) return
 
     hasAsyncError.value = true

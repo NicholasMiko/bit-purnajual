@@ -16,14 +16,17 @@ describe('validateSerialAvailability', () => {
     checkSerialMock.mockReset()
   })
 
-  it('mengembalikan true saat serial tersedia', async () => {
-    checkSerialMock.mockResolvedValue({ available: true })
+  it('memeriksa ulang serial yang sebelumnya ditolak', async () => {
+  checkSerialMock.mockRejectedValue(new Error(serialAlreadyUsedMessage))
+  const first = await validateSerialAvailability('AVL100004')
 
-    const result = await validateSerialAvailability('AVL100001')
+  checkSerialMock.mockResolvedValue({ available: true })
+  const second = await validateSerialAvailability('AVL100004')
 
-    expect(result).toBe(true)
-    expect(checkSerialMock).toHaveBeenCalledWith('AVL100001')
-  })
+  expect(first).toBe(serialAlreadyUsedMessage)
+  expect(second).toBe(true)
+  expect(checkSerialMock).toHaveBeenCalledTimes(2)
+})
 
   it('mengembalikan pesan saat serial sudah dipakai', async () => {
     checkSerialMock.mockRejectedValue(new Error(serialAlreadyUsedMessage))
@@ -57,24 +60,12 @@ describe('validateSerialAvailability', () => {
     expect(checkSerialMock).toHaveBeenCalledWith('AVL100002')
   })
 
-  it('tidak memanggil service dua kali untuk serial yang sama', async () => {
+  it('selalu memanggil service untuk setiap pemeriksaan', async () => {
     checkSerialMock.mockResolvedValue({ available: true })
 
     await validateSerialAvailability('AVL100003')
     await validateSerialAvailability('AVL100003')
 
-    expect(checkSerialMock).toHaveBeenCalledTimes(1)
-  })
-
-  it('mengambil hasil dari cache walau service berubah jawaban', async () => {
-    checkSerialMock.mockRejectedValue(new Error(serialAlreadyUsedMessage))
-    const first = await validateSerialAvailability('AVL100004')
-
-    checkSerialMock.mockResolvedValue({ available: true })
-    const second = await validateSerialAvailability('AVL100004')
-
-    expect(first).toBe(serialAlreadyUsedMessage)
-    expect(second).toBe(serialAlreadyUsedMessage)
-    expect(checkSerialMock).toHaveBeenCalledTimes(1)
-  })
+    expect(checkSerialMock).toHaveBeenCalledTimes(2)
+})
 })

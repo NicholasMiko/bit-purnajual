@@ -115,6 +115,8 @@ const props = defineProps({
   },
 })
 
+defineModel<string>({ default: '' })
+
 const selectedFile = defineModel<File | null>('file', { default: null })
 
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -126,6 +128,7 @@ refreshDisabledRule()
 const { value, errors, validate, meta } = useField<string>(
   () => props.name,
   computed(() => disabledRule.value),
+  { syncVModel: true },
 )
 
 const fileSizeLabel = computed(() => formatFileSize(selectedFile.value?.size ?? 0))

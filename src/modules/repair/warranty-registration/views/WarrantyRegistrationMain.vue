@@ -1,21 +1,15 @@
 <template>
-  <ConfirmationResponse
-    v-if="isSubmitted"
-    :nomor-registrasi="nomorRegistrasi"
-    @register-again="onRegisterAgain"
-  />
-
-  <section v-else class="space-y-6">
+  <section class="mx-auto max-w-5xl space-y-6">
     <div class="flex items-start justify-between">
       <div>
         <h1 class="text-3xl font-semibold text-ink-850">
           Registrasi Garansi Pembelian
         </h1>
-        <p v-if="!isConfirmation" class="mt-3 text-sm text-ink-700">
+        <p v-if="!isReviewStep" class="mt-3 text-sm text-ink-700">
           Step {{ currentStep }} of {{ totalStep }}
         </p>
       </div>
-      <StepIndicator v-if="!isConfirmation" class="mt-14" :current="currentStep" :total="totalStep" />
+      <StepIndicator v-if="!isReviewStep" class="mt-14" :current="currentStep" :total="totalStep" />
     </div>
 
     <PageContainer>
@@ -33,14 +27,14 @@
       />
 
       <RegistrationReview
-        v-if="isConfirmation"
+        v-if="isReviewStep"
         :form="warrantyRegistrationForm"
         :invoice-file="invoiceFile"
         :ktp-file="ktpFile"
       />
 
       <div class="px-8 pb-8">
-        <p v-if="isConfirmation" class="mb-4 text-lg font-bold text-ink-700">
+        <p v-if="isReviewStep" class="mb-4 text-lg font-bold text-ink-700">
           Apakah data yang di-input sudah benar semua?
         </p>
 
@@ -48,8 +42,12 @@
           {{ submitError }}
         </p>
 
+        <p v-if="storageWarning" class="mb-3 text-sm text-amber-600">
+          {{ storageWarning }}
+        </p>
+
         <div ref="actionRef" class="flex items-center gap-3 border-t border-ink-100 pt-5">
-          <template v-if="isConfirmation">
+          <template v-if="isReviewStep">
             <button
               type="button"
               class="rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600"
@@ -91,12 +89,13 @@
       </div>
     </PageContainer>
 
-    <ScrollToActionButton v-if="isConfirmation" :target-ref="actionRef" label="Konfirmasi" />
+    <ScrollToActionButton v-if="isReviewStep" :target-ref="actionRef" label="Konfirmasi" />
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useForm } from 'vee-validate'
 import PageContainer from '@/components/sharedComponents/container/PageContainer.vue'
 import StepIndicator from '@/components/base/StepIndicator.vue'
@@ -104,15 +103,27 @@ import ScrollToActionButton from '@/components/base/ScrollToActionButton.vue'
 import PurchaseInfoForm from '../components/PurchaseInfoForm.vue'
 import BuyerDataForm from '../components/BuyerDataForm.vue'
 import RegistrationReview from '../components/RegistrationReview.vue'
-import ConfirmationResponse from '../components/ConfirmationResponse.vue'
 import { WarrantyRegistrationFormModel } from '../models/warrantyRegistration.form.model'
-import { WarrantyRegistrationStep } from '../models/warrantyRegistration.step.enum'
+import {
+  WarrantyRegistrationStep,
+  stepByStepParam,
+  stepParamByStep,
+} from '../models/warrantyRegistration.step.enum'
 import {
   getProductCatalogList,
   createWarrantyRegistration,
 } from '../services/warrantyRegistration.service'
 import { mapToWarrantyRegistrationCreatePayload } from '../mappers/warrantyRegistration.mapper'
 import type { ProductCatalogResponseModel } from '../models/warrantyRegistration.response.model'
+import {
+  buildFileFromStored,
+  clearDraft,
+  loadDraft,
+  readFileAsStored,
+  saveDraft,
+  type StoredFileModel,
+} from '../utility/warrantyRegistration.storage'
+import { validateSerialAvailability } from '../validations/nomorSerial.validation'
 
 const purchaseInfoFields = [
   'merk',
@@ -138,24 +149,39 @@ const pagingRequest = {
   filterBy: {},
 }
 
-const warrantyRegistrationForm = ref(new WarrantyRegistrationFormModel())
-const productCatalog = ref<ProductCatalogResponseModel[]>([])
-const invoiceFile = ref<File | null>(null)
-const ktpFile = ref<File | null>(null)
+const route = useRoute()
+const router = useRouter()
 
-const currentStep = ref<WarrantyRegistrationStep>(WarrantyRegistrationStep.PurchaseInfo)
-const isConfirmation = ref(false)
-const isSubmitted = ref(false)
-const nomorRegistrasi = ref('')
+const draft = loadDraft()
+
+const initialForm = buildInitialForm()
+
+const warrantyRegistrationForm = ref(initialForm)
+const productCatalog = ref<ProductCatalogResponseModel[]>([])
+const invoiceFile = ref<File | null>(draft?.invoiceFile ? buildFileFromStored(draft.invoiceFile) : null)
+const ktpFile = ref<File | null>(draft?.ktpFile ? buildFileFromStored(draft.ktpFile) : null)
+
+const storedInvoiceFile = ref<StoredFileModel | null>(draft?.invoiceFile ?? null)
+const storedKtpFile = ref<StoredFileModel | null>(draft?.ktpFile ?? null)
+
 const submitError = ref('')
+const storageWarning = ref('')
 const actionRef = ref<HTMLElement | null>(null)
 
-const { errors, values, resetForm } = useForm({
-  initialValues: new WarrantyRegistrationFormModel(),
+const { errors, values } = useForm({
+  initialValues: { ...initialForm },
 })
 
-const isPurchaseInfoStep = computed(() => !isConfirmation.value && currentStep.value === WarrantyRegistrationStep.PurchaseInfo)
-const isBuyerDataStep = computed(() => !isConfirmation.value && currentStep.value === WarrantyRegistrationStep.BuyerData)
+const currentStep = computed(
+  () => stepByStepParam[String(route.params.step)] ?? WarrantyRegistrationStep.PurchaseInfo,
+)
+
+const isPurchaseInfoStep = computed(() => currentStep.value === WarrantyRegistrationStep.PurchaseInfo)
+const isBuyerDataStep = computed(() => currentStep.value === WarrantyRegistrationStep.BuyerData)
+const isReviewStep = computed(() => currentStep.value === WarrantyRegistrationStep.Review)
+
+const isPurchaseInfoComplete = computed(() => hasFilledFields(purchaseInfoFields))
+const isBuyerDataComplete = computed(() => hasFilledFields(buyerDataFields))
 
 const isStepValid = computed(() => {
   const fields = isBuyerDataStep.value ? buyerDataFields : purchaseInfoFields
@@ -166,9 +192,81 @@ const isStepValid = computed(() => {
   })
 })
 
-onMounted(async () => {
-  await fetchProductCatalog()
+onMounted(() => {
+  fetchProductCatalog()
 })
+
+watch(
+  currentStep,
+  (step) => {
+    guardStep(step)
+  },
+  { immediate: true },
+)
+
+watch(
+  warrantyRegistrationForm,
+  () => {
+    persistDraft()
+  },
+  { deep: true },
+)
+
+watch(invoiceFile, async (file) => {
+  storedInvoiceFile.value = file ? await readFileAsStored(file) : null
+  persistDraft()
+})
+
+watch(ktpFile, async (file) => {
+  storedKtpFile.value = file ? await readFileAsStored(file) : null
+  persistDraft()
+})
+
+function hasFilledFields(fields: string[]): boolean {
+  return fields.every((field) => {
+    const fieldValue = warrantyRegistrationForm.value[field as keyof WarrantyRegistrationFormModel]
+    return typeof fieldValue === 'string' && fieldValue.trim().length > 0
+  })
+}
+
+function guardStep(step: WarrantyRegistrationStep) {
+  if (step === WarrantyRegistrationStep.PurchaseInfo) return
+
+  if (!isPurchaseInfoComplete.value) {
+    router.replace({ name: 'warrantyregistration-create', params: { step: stepParamByStep[WarrantyRegistrationStep.PurchaseInfo] } })
+    return
+  }
+
+  if (step === WarrantyRegistrationStep.BuyerData) return
+
+  if (!isBuyerDataComplete.value) {
+    router.replace({ name: 'warrantyregistration-create', params: { step: stepParamByStep[WarrantyRegistrationStep.BuyerData] } })
+  }
+}
+
+function buildInitialForm(): WarrantyRegistrationFormModel {
+  const form = new WarrantyRegistrationFormModel()
+  if (!draft) return form
+
+  Object.keys(form).forEach((key) => {
+    const typedKey = key as keyof WarrantyRegistrationFormModel
+    if (draft.form[typedKey] !== undefined) form[typedKey] = draft.form[typedKey]
+  })
+
+  return form
+}
+
+function persistDraft() {
+  const isSaved = saveDraft({
+    form: warrantyRegistrationForm.value,
+    invoiceFile: storedInvoiceFile.value,
+    ktpFile: storedKtpFile.value,
+  })
+
+  storageWarning.value = isSaved
+    ? ''
+    : 'Data sementara tidak dapat disimpan karena ukuran berkas terlalu besar. Jangan menutup halaman sebelum registrasi dikirim.'
+}
 
 async function fetchProductCatalog() {
   try {
@@ -179,48 +277,53 @@ async function fetchProductCatalog() {
   }
 }
 
-function onNext() {
+function goToStep(step: WarrantyRegistrationStep) {
+  router.push({ name: 'warrantyregistration-create', params: { step: stepParamByStep[step] } })
+}
+
+async function onNext() {
   if (!isStepValid.value) return
 
+  submitError.value = ''
+
   if (isPurchaseInfoStep.value) {
-    currentStep.value = WarrantyRegistrationStep.BuyerData
+    const serialResult = await validateSerialAvailability(warrantyRegistrationForm.value.nomorSerial)
+    if (serialResult !== true) {
+      submitError.value = serialResult
+      return
+    }
+
+    goToStep(WarrantyRegistrationStep.BuyerData)
     return
   }
 
-  isConfirmation.value = true
+  goToStep(WarrantyRegistrationStep.Review)
 }
 
 function onBack() {
-  if (isConfirmation.value) {
-    isConfirmation.value = false
-    currentStep.value = WarrantyRegistrationStep.BuyerData
+  if (isReviewStep.value) {
+    goToStep(WarrantyRegistrationStep.BuyerData)
     return
   }
 
-  currentStep.value = WarrantyRegistrationStep.PurchaseInfo
+  goToStep(WarrantyRegistrationStep.PurchaseInfo)
 }
 
 async function onSubmit() {
   submitError.value = ''
+
   try {
     const payload = mapToWarrantyRegistrationCreatePayload(warrantyRegistrationForm.value)
     const response = await createWarrantyRegistration(payload)
-    nomorRegistrasi.value = String(response.result[0]?.id ?? '').replace('~uuid', '')
-    isSubmitted.value = true
+    const nomorRegistrasi = String(response.result[0]?.id ?? '').replace('~uuid', '')
+
+    clearDraft()
+    router.replace({
+      name: 'warrantyregistration-confirmation',
+      query: { nomor: nomorRegistrasi },
+    })
   } catch (error) {
     submitError.value = error instanceof Error ? error.message : 'Gagal menyimpan registrasi garansi'
   }
-}
-
-function onRegisterAgain() {
-  warrantyRegistrationForm.value = new WarrantyRegistrationFormModel()
-  invoiceFile.value = null
-  ktpFile.value = null
-  resetForm({ values: new WarrantyRegistrationFormModel() })
-  currentStep.value = WarrantyRegistrationStep.PurchaseInfo
-  isConfirmation.value = false
-  isSubmitted.value = false
-  nomorRegistrasi.value = ''
-  submitError.value = ''
 }
 </script>

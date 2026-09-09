@@ -13,7 +13,7 @@
         required
       />
       <template #after>
-        <InputValidationState name="nama" />
+        <InputValidationState name="nama" :check-delay="0" />
       </template>
     </FormRow>
 
@@ -26,7 +26,7 @@
         required
       />
       <template #after>
-        <InputValidationState name="alamatTempatTinggal" />
+        <InputValidationState name="alamatTempatTinggal" :check-delay="0" />
       </template>
     </FormRow>
 
@@ -39,14 +39,14 @@
         required
       />
       <template #after>
-        <InputValidationState name="nomorTelepon" />
+        <InputValidationState name="nomorTelepon" :check-delay="0" />
       </template>
     </FormRow>
 
     <FormRow label="Alamat Email" :without-after="false">
       <InputEmail v-model="form.alamatEmail" name="alamatEmail" placeholder="Input Alamat Email" required />
       <template #after>
-        <InputValidationState name="alamatEmail" />
+        <InputValidationState name="alamatEmail" :check-delay="0" />
       </template>
     </FormRow>
 
@@ -64,7 +64,7 @@
         required
       />
       <template #after>
-        <InputValidationState name="fotoKtp" />
+        <InputValidationState name="fotoKtp" :check-delay="0" />
       </template>
     </FormRow>
   </FormContainer>
